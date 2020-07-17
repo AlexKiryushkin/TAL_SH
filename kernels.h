@@ -7,10 +7,10 @@
 
 #endif
 
+#include "kernel_auxiliary_data.h"
+
 #ifndef NO_GPU
 // CUDA KERNELS:
-template <typename T>
-__global__ void gpu_array_norm2__(size_t tsize, const T* __restrict__ arr, volatile double* bnorm2);
 template <typename T>
 __global__ void gpu_array_init__(size_t tsize, T* arr, T val);
 template <typename T>
@@ -54,5 +54,6 @@ __global__ void gpu_matrix_multiply_nn__(size_t ll, size_t lr, size_t lc, const 
 template <typename T>
 __global__ void gpu_matrix_multiply_tt__(size_t ll, size_t lr, size_t lc, const T* arg1, const T* arg2, T* arg0, T alpha);
 
+#include "gpu_array_init_def.h"
 
 #endif

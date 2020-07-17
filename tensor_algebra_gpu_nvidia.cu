@@ -91,7 +91,6 @@ TO BE FIXED:
 #include "device_algebra.h"
 #include "mem_manager.h"
 #include "talsh_complex.h"
-#include "kernel_auxiliary_data.h"
 #include "kernels.h"
 
 //----------------------------------------------------------------------
@@ -118,16 +117,7 @@ static int cuda_task_finalize(cudaTask_t *cuda_task);
 //---------------------------------------------------------------------------------------------------
 #ifndef NO_GPU
 //CUDA KERNELS:
-// ARRAY INITIALIZATION:
-template <typename T>
-__global__ void gpu_array_init__(size_t tsize, T * arr, T val)
-/** arr(0:tsize-1)=val **/
-{
- size_t _ti = blockIdx.x*blockDim.x + threadIdx.x;
- size_t _gd = gridDim.x*blockDim.x;
- for(size_t l = _ti; l < tsize; l += _gd) arr[l] = val;
- return;
-}
+
 //---------------------------------------------------------------------------------------------------
 // SCALAR MULTIPLICATION:
 // REAL:
