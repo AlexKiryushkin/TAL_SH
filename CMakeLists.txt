@@ -12,6 +12,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(FindCUDA)
 find_package(MPI REQUIRED)
 
+option(TALSH_GPU ON)
+if (TALSH_GPU)
+	set(TALSH_GPU_ARCH "35" CACHE STRING "Architechture of NVIDIA GPU")
+endif()
+option(TALSH_BLAS ON)
+option(TALSH_FINE_TIMING OFF)
+option(WITH_CUTENSOR OFF)
+option(TALSH_BUILD_SAMPLES OFF)
+
 #TODO:
 #CUDA FLAGS - cuTT
 #Make Blas optional
@@ -19,8 +28,6 @@ find_package(MPI REQUIRED)
 #debug/dev mode flags
 #fpic flags
 # DF := -WF, when using IBM compilers
-
-#set(TALSH_GPU_ARCH 35)
 
 if (TALSH_GPU)
 	set(TALSH_GPU_DEFS "CUDA_ARCH=${TALSH_GPU_ARCH}0")
@@ -32,8 +39,8 @@ if(WITH_CUTENSOR)
     set(TALSH_GPU_DEFS USE_CUTENSOR)
 endif()
 
-set(TALSH_CXX_FLAGS ${CMAKE_CXX_FLAGS} -O3)
-set(TALSH_Fortran_FLAGS ${CMAKE_Fortran_FLAGS} -O3)
+set(TALSH_CXX_FLAGS $<$<NOT:$<CONFIG:Debug>>:-O3>)
+set(TALSH_Fortran_FLAGS ${CMAKE_Fortran_FLAGS} $<$<NOT:$<CONFIG:Debug>>:-O3>)
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
   set(TALSH_Fortran_FLAGS ${TALSH_Fortran_FLAGS} -fpic -fpp -vec-threshold4 -qopenmp -mkl=parallel)
@@ -57,8 +64,8 @@ if (NOT TALSH_BLAS)
        set(NO_BLAS NO_BLAS)
 endif()
 
-set(TALSH_CXX_COMPILE_DEFS ${TALSH_GPU_DEFS} ${NO_BLAS} NO_AMD NO_PHI LINUX)
-set(TALSH_Fortran_COMPILE_DEFS ${TALSH_GPU_DEFS} ${NO_BLAS} NO_AMD NO_PHI LINUX)
+set(TALSH_CXX_COMPILE_DEFS ${TALSH_GPU_DEFS} ${NO_BLAS} NO_AMD NO_PHI)
+set(TALSH_Fortran_COMPILE_DEFS ${TALSH_GPU_DEFS} ${NO_BLAS} NO_AMD NO_PHI)
 
 if (TALSH_GPU)
 	   set(TALSH_INCLUDES ${MPI_C_INCLUDE_PATH} ${MPI_Fortran_INCLUDE_PATH} ${CUDA_INCLUDE_DIRS})
@@ -91,52 +98,6 @@ set (TALSH_CXX_SOURCES
 	talshxx.cpp
         )
 
-if(TALSH_GPU)
-	set(TALSH_CUDA_SOURCES tensor_algebra_gpu_nvidia.cu)
-else()
-	configure_file(tensor_algebra_gpu_nvidia.cu ${PROJECT_SOURCE_DIR}/tensor_algebra_gpu_nvidia.cpp COPYONLY)
-	set(TALSH_CXX_SOURCES ${TALSH_CXX_SOURCES} tensor_algebra_gpu_nvidia.cpp)
-endif()
-
-#set(TALSH_CUDA_FLAGS -O3 -lineinfo -w -D_FORCE_INLINES
-#                                               -std=c++11 -Xptxas --warn-on-spills -arch=sm_${TALSH_GPU_ARCH})
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Cray")
-	set(TALSH_CUDA_FLAGS  ${TALSH_CUDA_FLAGS} -O3 -lineinfo -w -D_FORCE_INLINES
-		-Xptxas --warn-on-spills;-gencode arch=compute_${TALSH_GPU_ARCH},code=sm_${TALSH_GPU_ARCH}; -ccbin /usr/bin/g++)
-else()
-set(TALSH_CUDA_FLAGS  ${TALSH_CUDA_FLAGS} -O3 -lineinfo -w -D_FORCE_INLINES
-                -std=c++11 -Xptxas --warn-on-spills;-gencode arch=compute_${TALSH_GPU_ARCH},code=sm_${TALSH_GPU_ARCH}; -ccbin /usr/bin/g++)
-endif()
-
-if(TALSH_FINE_TIMING)
-  set(TALSH_CUDA_FLAGS ${TALSH_CUDA_FLAGS} -DGPU_FINE_TIMING)
-endif()
-
-add_library(talsh_cxx OBJECT ${TALSH_CXX_SOURCES})
-target_include_directories(talsh_cxx PUBLIC ${TALSH_INCLUDES})
-target_compile_definitions(talsh_cxx PRIVATE ${TALSH_CXX_COMPILE_DEFS})
-target_compile_options(talsh_cxx PUBLIC ${TALSH_CXX_FLAGS})
-
-
-if(TALSH_GPU)
-	add_library(talsh_fort OBJECT ${TALSH_FORTRAN_SOURCES})
-	target_include_directories(talsh_fort PUBLIC ${TALSH_INCLUDES})
-	target_compile_definitions(talsh_fort PRIVATE ${TALSH_Fortran_COMPILE_DEFS})
-	target_compile_options(talsh_fort PUBLIC ${TALSH_Fortran_FLAGS})
-
-	set_source_files_properties(${TALSH_CUDA_SOURCES} PROPERTIES CUDA_SOURCE_PROPERTY_FORMAT OBJ)
-	cuda_add_library(talsh ${TALSH_CUDA_SOURCES} $<TARGET_OBJECTS:talsh_cxx> $<TARGET_OBJECTS:talsh_fort> OPTIONS ${TALSH_CUDA_FLAGS})
-	
-	#cuda_wrap_srcs(talsh_cuda_ptx PTX tensor_algebra_gpu_nvidia ${TALSH_CUDA_SOURCES} OPTIONS ${TALSH_CUDA_FLAGS})
-else()
-	add_library(talsh STATIC ${TALSH_FORTRAN_SOURCES} $<TARGET_OBJECTS:talsh_cxx>)
-	target_include_directories(talsh PUBLIC ${TALSH_INCLUDES})
-	target_compile_definitions(talsh PRIVATE ${TALSH_Fortran_COMPILE_DEFS})
-	target_compile_options(talsh PUBLIC ${TALSH_Fortran_FLAGS})
-endif()
-
-
 set(TALSH_HEADERS
 	timer.h
 	byte_packet.h
@@ -149,9 +110,68 @@ set(TALSH_HEADERS
 	talshxx.hpp
         )
 
+set(TALSH_CUDA_HEADERS
+	device_algebra.h)
+
+if(TALSH_GPU)
+	set(TALSH_CUDA_SOURCES tensor_algebra_gpu_nvidia.cu)
+else()
+	configure_file(tensor_algebra_gpu_nvidia.cu ${PROJECT_SOURCE_DIR}/tensor_algebra_gpu_nvidia.cpp COPYONLY)
+	set(TALSH_CXX_SOURCES ${TALSH_CXX_SOURCES} tensor_algebra_gpu_nvidia.cpp)
+endif()
+
+#set(TALSH_CUDA_FLAGS -O3 -lineinfo -w -D_FORCE_INLINES
+#                                               -std=c++11 -Xptxas --warn-on-spills -arch=sm_${TALSH_GPU_ARCH})
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Cray")
+	set(TALSH_CUDA_FLAGS  ${TALSH_CUDA_FLAGS} $<$<NOT:$<CONFIG:Debug>>:-O3> -lineinfo -w -D_FORCE_INLINES
+		-Xptxas --warn-on-spills;-gencode arch=compute_${TALSH_GPU_ARCH},code=sm_${TALSH_GPU_ARCH};)
+else()
+	set(TALSH_CUDA_FLAGS  ${TALSH_CUDA_FLAGS} $<$<NOT:$<CONFIG:Debug>>:-O3> -lineinfo -w -D_FORCE_INLINES
+            -std=c++11 -Xptxas --warn-on-spills;-gencode arch=compute_${TALSH_GPU_ARCH},code=sm_${TALSH_GPU_ARCH};)
+endif()
+
+if(TALSH_FINE_TIMING)
+  set(TALSH_CUDA_FLAGS ${TALSH_CUDA_FLAGS} -DGPU_FINE_TIMING)
+endif()
+
+add_library(talsh_cxx OBJECT ${TALSH_CXX_SOURCES} ${TALSH_HEADERS})
+target_include_directories(talsh_cxx PUBLIC ${TALSH_INCLUDES})
+target_compile_definitions(talsh_cxx PRIVATE ${TALSH_CXX_COMPILE_DEFS})
+target_compile_options(talsh_cxx PUBLIC ${TALSH_CXX_FLAGS})
+
+
+if(TALSH_GPU)
+	add_library(talsh_fort OBJECT ${TALSH_FORTRAN_SOURCES})
+	target_include_directories(talsh_fort PUBLIC ${TALSH_INCLUDES})
+	target_compile_definitions(talsh_fort PRIVATE ${TALSH_Fortran_COMPILE_DEFS})
+	target_compile_options(talsh_fort PUBLIC ${TALSH_Fortran_FLAGS})
+
+	set_source_files_properties(${TALSH_CUDA_SOURCES} PROPERTIES CUDA_SOURCE_PROPERTY_FORMAT OBJ)
+	cuda_add_library(talsh ${TALSH_CUDA_SOURCES} ${TALSH_CUDA_HEADERS} $<TARGET_OBJECTS:talsh_cxx> $<TARGET_OBJECTS:talsh_fort> OPTIONS ${TALSH_CUDA_FLAGS})
+	CUDA_ADD_CUBLAS_TO_TARGET(talsh)
+	#cuda_wrap_srcs(talsh_cuda_ptx PTX tensor_algebra_gpu_nvidia ${TALSH_CUDA_SOURCES} OPTIONS ${TALSH_CUDA_FLAGS})
+else()
+	add_library(talsh STATIC ${TALSH_FORTRAN_SOURCES} $<TARGET_OBJECTS:talsh_cxx>)
+	target_include_directories(talsh PUBLIC ${TALSH_INCLUDES})
+	target_compile_definitions(talsh PRIVATE ${TALSH_Fortran_COMPILE_DEFS})
+	target_compile_options(talsh PUBLIC ${TALSH_Fortran_FLAGS})
+endif()
+
+if (TALSH_BUILD_SAMPLES)
+	set(TALSH_CXX_SAMPLES
+		test.cpp)
+		
+	add_executable(talsh_samples ${TALSH_CXX_SAMPLES})
+	target_link_libraries(talsh_samples PUBLIC talsh PRIVATE svml_dispmd libmmdd libifcoremdd)
+	target_include_directories(talsh_samples PUBLIC ${TALSH_INCLUDES} ${TALSH_HEADERS})
+	target_compile_definitions(talsh_samples PRIVATE ${TALSH_CXX_COMPILE_DEFS})
+	target_compile_options(talsh_samples PUBLIC ${TALSH_CXX_FLAGS})
+endif()
+
 install(TARGETS talsh
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+        LIBRARY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib
+        ARCHIVE DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/lib)
 
 install(FILES ${TALSH_HEADERS}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include)

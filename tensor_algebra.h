@@ -66,6 +66,7 @@ FOR DEVELOPERS ONLY:
 #ifdef USE_CUTENSOR
 #include <stdint.h>
 #endif
+#include "time.h"
 
 //GLOBAL PARAMETERS:
 #define MAX_TENSOR_RANK 32 //max allowed tensor rank: Must be multiple of 4

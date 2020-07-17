@@ -30,6 +30,7 @@
 
 #ifdef __cplusplus
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -37,23 +38,6 @@
 
 #include "talshxx.hpp"
 
-#endif
-
-#ifdef __cplusplus
-extern "C"{
-#endif
-void test_talsh_c(int * ierr);
-void test_talsh_cxx(int * ierr);
-void test_talsh_xl(int * ierr);
-void test_talsh_svd(int * ierr);
-void test_talsh_qc_xl(int * ierr);
-void test_talsh_qc(int * ierr);
-void test_nwchem_c(int * ierr);
-#ifndef NO_GPU
-void test_nvtal_c(int * ierr);
-#endif
-#ifdef __cplusplus
-}
 #endif
 
 
@@ -1102,3 +1086,20 @@ void test_nvtal_c(int * ierr)
  return;
 }
 #endif //NO_GPU
+
+int main()
+{
+  try
+  {
+    int err{};
+    test_talsh_cxx(&err);
+  }
+  catch (const std::exception & e)
+  {
+    std::cout << e.what() << '\n';
+  }
+  catch (...)
+  {
+    std::cout << "Unknown exception caught\n";
+  }
+}
