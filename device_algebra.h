@@ -123,7 +123,6 @@ FOR DEVELOPERS ONLY:
 #define MAT_MULT_TILE_DIMX 16      //X tile dimension size for <gpu_matrix_multiply_tn__>: Must be multiple of MAT_MULT_TILE_DIMY
 #endif
 #define THRDS_ARRAY_PRODUCT 256    //threads per block for <gpu_array_product__>
-#define THRDS_ARRAY_NORM2 256      //threads per block for <gpu_array_norm2__>
 #define THRDS_ARRAY_INIT 256       //threads per block for <gpu_array_init__>
 #define THRDS_ARRAY_SCALE 256      //threads per block for <gpu_array_scale__> and <gpu_array_dot_product__>
 #define THRDS_ARRAY_ADD 256        //threads per block for <gpu_array_add__>

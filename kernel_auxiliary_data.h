@@ -90,8 +90,6 @@ __device__ __constant__ static cuDoubleComplex zgemm_alpha_plus = { 1.0,0.0 };  
 __device__ __constant__ static cuDoubleComplex zgemm_alpha_minus = { -1.0,0.0 }; //default alpha constant ZGEMM
 __device__ __constant__ static cuDoubleComplex zgemm_beta_one = { 1.0,0.0 };     //default beta constant ZGEMM
 __device__ __constant__ static cuDoubleComplex zgemm_beta_zero = { 0.0,0.0 };    //zero beta constant ZGEMM
-// Infrastructure for kernels <gpu_array_norm2__>:
-__device__ static int norm2_wr_lock = 0; //write lock shared by all <gpu_array_norm2__> running on GPU
 // Infrastructure for kernels <gpu_array_dot_product__>:
 __device__ static int dot_product_wr_lock = 0; //write lock shared by all <gpu_array_dot_product__> running on GPU
 #endif /*NO_GPU*/
