@@ -112,7 +112,8 @@ set(TALSH_HEADERS
 
 set(TALSH_CUDA_HEADERS
 	device_algebra.h
-	kernel_auxiliary_data.h)
+	kernel_auxiliary_data.h
+	kernels.h)
 
 if(TALSH_GPU)
 	set(TALSH_CUDA_SOURCES tensor_algebra_gpu_nvidia.cu)
