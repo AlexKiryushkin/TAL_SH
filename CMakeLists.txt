@@ -113,6 +113,7 @@ set(TALSH_HEADERS
 set(TALSH_CUDA_HEADERS
 	device_algebra.h
 	gpu_array_init_def.h
+	gpu_scalar_multiply_def.h
 	kernel_auxiliary_data.h
 	kernels.h)
 
