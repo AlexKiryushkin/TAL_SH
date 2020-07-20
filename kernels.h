@@ -49,7 +49,11 @@ __global__ void gpu_tensor_block_copy_scatter_dlf__(int dmo, int drc, int dim_nu
 template <typename T>
 __global__ void gpu_matrix_multiply_tn__(size_t ll, size_t lr, size_t lc, const T* arg1, const T* arg2, T* arg0, T alpha);
 
+#include "gpu_array_add_def.h"
+#include "gpu_array_dot_product_def.h"
 #include "gpu_array_init_def.h"
+#include "gpu_array_product_def.h"
+#include "gpu_array_scale_def.h"
 #include "gpu_scalar_multiply_def.h"
 
 #endif

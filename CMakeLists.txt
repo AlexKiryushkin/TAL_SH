@@ -113,7 +113,11 @@ set(TALSH_HEADERS
 
 set(TALSH_CUDA_HEADERS
 	device_algebra.h
+	gpu_array_add_def.h
+	gpu_array_dot_product_def.h
 	gpu_array_init_def.h
+	gpu_array_product_def.h
+	gpu_array_scale_def.h
 	gpu_scalar_multiply_def.h
 	kernel_auxiliary_data.h
 	kernels.h)
@@ -165,7 +169,7 @@ endif()
 
 if (TALSH_BUILD_SAMPLES)
 	set(TALSH_CXX_SAMPLES
-		test.cpp)
+		example.cpp)
 		
 	add_executable(talsh_samples ${TALSH_CXX_SAMPLES})
 	target_link_libraries(talsh_samples PUBLIC talsh PRIVATE svml_dispmd libmmdd libifcoremdd)

@@ -1092,7 +1092,8 @@ int main()
   try
   {
     int err{};
-    test_talsh_cxx(&err);
+    test_nvtal_c(&err);
+    getchar();
   }
   catch (const std::exception & e)
   {
