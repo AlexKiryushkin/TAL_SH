@@ -8,6 +8,7 @@
 #endif
 
 #include "kernel_auxiliary_data.h"
+#include "talsh_complex_wrapper.h"
 
 #ifndef NO_GPU
 // CUDA KERNELS:

@@ -104,6 +104,7 @@ set(TALSH_HEADERS
 	tensor_algebra.h
 	mem_manager.h
 	talsh_complex.h
+	talsh_complex_wrapper.h
 	talsh.h
 	tensor_method.hpp
 	talsh_task.hpp
