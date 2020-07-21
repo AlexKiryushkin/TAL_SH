@@ -18,8 +18,6 @@ template <typename T>
 __global__ void gpu_scalar_multiply__(const T* left_arg, const T* right_arg, T* dest_arg, T alpha,
   int left_conj = 0, int right_conj = 0);
 template <typename T>
-__global__ void gpu_array_scale__(size_t tsize, T* arr, T alpha);
-template <typename T>
 __global__ void gpu_array_add__(size_t tsize, T* __restrict__ arr0, const T* __restrict__ arr1,
   T alpha, int left_conj = 0);
 template <typename T>
@@ -53,7 +51,6 @@ __global__ void gpu_matrix_multiply_tn__(size_t ll, size_t lr, size_t lc, const 
 #include "gpu_array_dot_product_def.h"
 #include "gpu_array_init_def.h"
 #include "gpu_array_product_def.h"
-#include "gpu_array_scale_def.h"
 #include "gpu_scalar_multiply_def.h"
 
 #endif
