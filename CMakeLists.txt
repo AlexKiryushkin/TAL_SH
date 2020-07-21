@@ -134,6 +134,7 @@ if(TALSH_GPU)
 		device_resource_management.cu
 		kernel_auxiliary_data.cu
 		tensor_algebra_gpu_nvidia.cu
+		tensor_block.cu
 		tensor_shape.cu
 		tensor_signature.cu)
 else()
