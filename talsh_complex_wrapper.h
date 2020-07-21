@@ -126,22 +126,26 @@ TALSH_HOST_DEVICE TALSH_INLINE T talshConjugate(T value, int conj)
   return (conj == 0) ? value : talshComplexConjg(value);
 }
 
-TALSH_HOST_DEVICE TALSH_INLINE talshComplex4 operator*(talshComplex4 lhs, talshComplex4 rhs)
+template <class T, std::enable_if_t<RealType<T>::valid, int8_t> = 0>
+TALSH_HOST_DEVICE TALSH_INLINE T talshMul(T lhs, T rhs)
+{
+  return lhs * rhs;
+}
+
+template <class T, std::enable_if_t<ComplexType<T>::valid, int8_t> = 0>
+TALSH_HOST_DEVICE TALSH_INLINE T talshMul(T lhs, T rhs)
 {
   return talshComplexMul(lhs, rhs);
 }
 
-TALSH_HOST_DEVICE TALSH_INLINE talshComplex8 operator*(talshComplex8 lhs, talshComplex8 rhs)
+template <class T, std::enable_if_t<RealType<T>::valid, int8_t> = 0>
+TALSH_HOST_DEVICE TALSH_INLINE T talshAdd(T lhs, T rhs)
 {
-  return talshComplexMul(lhs, rhs);
+  return lhs + rhs;
 }
 
-TALSH_HOST_DEVICE TALSH_INLINE talshComplex4 operator+(talshComplex4 lhs, talshComplex4 rhs)
-{
-  return talshComplexAdd(lhs, rhs);
-}
-
-TALSH_HOST_DEVICE TALSH_INLINE talshComplex8 operator+(talshComplex8 lhs, talshComplex8 rhs)
+template <class T, std::enable_if_t<ComplexType<T>::valid, int8_t> = 0>
+TALSH_HOST_DEVICE TALSH_INLINE T talshAdd(T lhs, T rhs)
 {
   return talshComplexAdd(lhs, rhs);
 }

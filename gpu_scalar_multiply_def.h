@@ -10,8 +10,8 @@ __global__ void gpu_scalar_multiply__(const T* left_arg, const T* right_arg, T* 
 {
   if (blockIdx.x == 0 && threadIdx.x == 0) 
   {
-    *dest_arg = (*dest_arg) +
-      alpha * talshConjugate(*left_arg, left_conj) * talshConjugate(*right_arg, right_conj);
+    *dest_arg = talshAdd(*dest_arg, talshMul(alpha, 
+      talshMul(talshConjugate(*left_arg, left_conj), talshConjugate(*right_arg, right_conj))));
   }
 }
 

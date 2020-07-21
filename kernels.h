@@ -7,6 +7,10 @@
 
 #endif
 
+#include "tensor_algebra.h"
+#include "device_algebra.h"
+#include "mem_manager.h"
+#include "talsh_complex.h"
 #include "kernel_auxiliary_data.h"
 #include "talsh_complex_wrapper.h"
 
@@ -51,6 +55,12 @@ __global__ void gpu_matrix_multiply_tn__(size_t ll, size_t lr, size_t lc, const 
 #include "gpu_array_dot_product_def.h"
 #include "gpu_array_init_def.h"
 #include "gpu_array_product_def.h"
+#include "gpu_matrix_multiply_tn_def.h"
 #include "gpu_scalar_multiply_def.h"
+#include "gpu_tensor_block_add_dlf_def.h"
+#include "gpu_tensor_block_copy_cmplx_split_in_dlf_def.h"
+#include "gpu_tensor_block_copy_cmplx_split_out_dlf_def.h"
+#include "gpu_tensor_block_copy_dlf_def.h"
+#include "gpu_tensor_block_copy_scatter_dlf_def.h"
 
 #endif

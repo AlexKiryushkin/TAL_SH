@@ -117,7 +117,13 @@ set(TALSH_CUDA_HEADERS
 	gpu_array_dot_product_def.h
 	gpu_array_init_def.h
 	gpu_array_product_def.h
+	gpu_matrix_multiply_tn_def.h
 	gpu_scalar_multiply_def.h
+	gpu_tensor_block_add_dlf_def.h
+	gpu_tensor_block_copy_cmplx_split_in_dlf_def.h
+	gpu_tensor_block_copy_cmplx_split_out_dlf_def.h
+	gpu_tensor_block_copy_dlf_def.h
+	gpu_tensor_block_copy_scatter_dlf_def.h
 	kernel_auxiliary_data.h
 	kernels.h)
 

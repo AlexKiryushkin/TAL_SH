@@ -26,9 +26,9 @@ __global__ void gpu_array_dot_product__(size_t tsize, const T* arr1, const T* ar
 
   for (size_t l = blockIdx.x * blockDim.x + threadIdx.x; l < tsize; l += gridDim.x * blockDim.x)
   {
-    dpr = dpr + talshConjugate(arr1[l], left_conj) * talshConjugate(arr2[l], right_conj);
+    dpr = talshAdd(dpr, talshMul(talshConjugate(arr1[l], left_conj), talshConjugate(arr2[l], right_conj)));
   }
-  dprs[threadIdx.x] = dpr * alpha;
+  dprs[threadIdx.x] = talshMul(dpr, alpha);
   __syncthreads();
 
   unsigned int s = blockDim.x;
@@ -37,7 +37,7 @@ __global__ void gpu_array_dot_product__(size_t tsize, const T* arr1, const T* ar
     unsigned int j = (s + 1U) >> 1;
     if (threadIdx.x + j < s)
     {
-      dprs[threadIdx.x] = dprs[threadIdx.x] + dprs[threadIdx.x + j];
+      dprs[threadIdx.x] = talshAdd(dprs[threadIdx.x], dprs[threadIdx.x + j]);
     }
     __syncthreads();
     s = j;

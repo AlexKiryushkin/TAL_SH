@@ -17,7 +17,7 @@ __global__ void gpu_array_product__(size_t tsize1, const T* arr1, size_t tsize2,
     size_t _jn = ((_jb + THRDS_ARRAY_PRODUCT > tsize2) ? (tsize2 - _jb) : THRDS_ARRAY_PRODUCT);
     if (_tx < _jn)
     {
-      rbuf[_tx] = talshConjugate(arr2[_jb + _tx], right_conj) * alpha;
+      rbuf[_tx] = talshMul(talshConjugate(arr2[_jb + _tx], right_conj), alpha);
     }
 
     for (size_t _ib = blockIdx.x * THRDS_ARRAY_PRODUCT; _ib < tsize1; _ib += gridDim.x * THRDS_ARRAY_PRODUCT) 
@@ -33,7 +33,8 @@ __global__ void gpu_array_product__(size_t tsize1, const T* arr1, size_t tsize2,
       {
         if (_tx < _in)
         {
-          arr0[(_jb + _jc) * tsize1 + _ib + _tx] = arr0[(_jb + _jc) * tsize1 + _ib + _tx] + lbuf[_tx] * rbuf[_jc];
+          arr0[(_jb + _jc) * tsize1 + _ib + _tx] = 
+            talshAdd(arr0[(_jb + _jc) * tsize1 + _ib + _tx], talshMul(lbuf[_tx], rbuf[_jc]));
         }
       }
       __syncthreads();
