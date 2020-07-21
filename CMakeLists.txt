@@ -132,6 +132,7 @@ if(TALSH_GPU)
 	set(TALSH_CUDA_SOURCES 
 		auxiliary_functions.cu
 		cuda_task.cu
+		device_id.cu
 		device_resource_management.cu
 		kernel_auxiliary_data.cu
 		tensor_algebra_gpu_nvidia.cu
