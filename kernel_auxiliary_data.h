@@ -12,6 +12,8 @@
 #define GPU_DEBUG_DUMP_SIZE 128 //size of the GPU debug dump (int array)
 #endif /*NO_GPU*/
 
+#include "mem_manager.h"
+
 //----------------------------------------------------------------------------------------------------
 //PARAMETERS:
 static int VERBOSE = 1; //verbosity for error messages

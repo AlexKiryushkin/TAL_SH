@@ -112,6 +112,7 @@ set(TALSH_HEADERS
         )
 
 set(TALSH_CUDA_HEADERS
+	auxiliary_functions.h
 	device_algebra.h
 	gpu_array_add_def.h
 	gpu_array_dot_product_def.h
@@ -128,7 +129,9 @@ set(TALSH_CUDA_HEADERS
 	kernels.h)
 
 if(TALSH_GPU)
-	set(TALSH_CUDA_SOURCES tensor_algebra_gpu_nvidia.cu)
+	set(TALSH_CUDA_SOURCES 
+	auxiliary_functions.cu
+	tensor_algebra_gpu_nvidia.cu)
 else()
 	configure_file(tensor_algebra_gpu_nvidia.cu ${PROJECT_SOURCE_DIR}/tensor_algebra_gpu_nvidia.cpp COPYONLY)
 	set(TALSH_CXX_SOURCES ${TALSH_CXX_SOURCES} tensor_algebra_gpu_nvidia.cpp)
