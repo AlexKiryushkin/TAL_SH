@@ -4,6 +4,7 @@
 
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <cublas_v2.h>
 
 #endif
 
@@ -12,6 +13,7 @@
 #define GPU_DEBUG_DUMP_SIZE 128 //size of the GPU debug dump (int array)
 #endif /*NO_GPU*/
 
+#include "device_algebra.h"
 #include "mem_manager.h"
 
 //----------------------------------------------------------------------------------------------------

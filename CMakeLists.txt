@@ -131,6 +131,7 @@ set(TALSH_CUDA_HEADERS
 if(TALSH_GPU)
 	set(TALSH_CUDA_SOURCES 
 	auxiliary_functions.cu
+	device_resource_management.cu
 	tensor_algebra_gpu_nvidia.cu)
 else()
 	configure_file(tensor_algebra_gpu_nvidia.cu ${PROJECT_SOURCE_DIR}/tensor_algebra_gpu_nvidia.cpp COPYONLY)
