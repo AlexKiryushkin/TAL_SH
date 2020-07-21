@@ -2,6 +2,9 @@
 
 #ifndef NO_GPU
 
+// Infrastructure for kernels <gpu_array_dot_product__>:
+__device__ static int dot_product_wr_lock = 0; //write lock shared by all <gpu_array_dot_product__> running on GPU
+
 template <class T, std::enable_if_t<RealType<T>::valid, int8_t> = 0>
 __device__ void atomicIncrement(T * address, T increment)
 {
